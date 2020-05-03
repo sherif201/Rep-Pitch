@@ -1,0 +1,56 @@
+Data Products Pitch
+========================================================
+author: Sherif Hesham
+date: 4 May 2020
+autosize: true
+
+Tech Stock comparisons with Volumetric Moving Averages
+========================================================
+
+
+- Moving averages help smooth price movements by reducing the noise of random flucatiations.
+- Adjusting the average for the trade volume allows a better analysis of trend momentum and better fit to the price
+- Plotting a short term and long term moving average can help determine breakouts 
+
+Data Sources
+==================================================
+- Stock makret data for tech companies are obtained for the period 1 May 2019 to 2020
+- Data are labeled for each stock ticker and added into a data frame and processed
+- The user can select two values which are the number of periods to average over for each VWMA
+
+Computational Efficiency
+======================
+- The app makes use of reactive blocks feature in shiny to improve computational efficiency
+- The only variable that can be changed by the use is the number of periods to average over the data, stock data won't be reprocessed when the inputs are changed.
+Fitted line of the vMWA on AMZN Stock
+========================================================
+
+```{r, echo=FALSE}
+
+library(dplyr)
+library(shiny)
+library(tidyquant)
+library(lubridate)
+library(tibble)
+library(ggplot2)
+    start<-as.Date("2019-05-01")
+    end<-as.Date("2020-05-01")
+    start_zoom<- (end-weeks(20))
+    
+    AMZN <- tq_get("AMZN", get = "stock.prices", from = start, to = end)
+    AMZN<-add_column(AMZN)
+    data<-bind_rows(AMZN)
+    
+    data %>%
+      filter(date >= start - days(2 * 50)) %>%
+      ggplot(aes(x = date, y = close, volume = volume, group = symbol)) +
+      geom_candlestick(aes(open = open, high = high, low = low, close = close)) +
+      geom_ma(ma_fun = VWMA, n=20, wilder = TRUE, linetype = 5) +
+      geom_ma(ma_fun = VWMA, n=100 , wilder = TRUE, color = "red") + 
+      labs(title = "Example Tech Stock", subtitle= "N1= 20,       N2 = 100",
+           y = "Closing Price", x = "") + 
+      coord_x_date(xlim = c(start_zoom, end)) +
+      facet_wrap(~ symbol, ncol = 2, scales = "free_y") + 
+      theme_tq()
+```
+
