@@ -1,0 +1,12 @@
+name: VMWA
+title: VMWA
+username:
+account: sherif201
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2231471
+bundleId: 3095377
+url: https://sherif201.shinyapps.io/VMWA/
+when: 1588471621.35273
+asMultiple: FALSE
+asStatic: FALSE
